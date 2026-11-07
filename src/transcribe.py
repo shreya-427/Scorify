@@ -59,7 +59,7 @@ def remove_ghost_notes(notes: list[NoteEvent]) -> list[NoteEvent]:
         if not (is_short and is_weak):
             kept.append(note)
     return kept
-
+#
 #turns a filepath into a clean, sorted list of NoteEvent objects
 def transcribe(audio_path: str) -> list[NoteEvent]:
     _, _, note_events = predict(audio_path)

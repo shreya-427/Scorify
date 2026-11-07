@@ -1,5 +1,5 @@
 from models import NoteEvent, QuantizedNote
-
+#
 #converts seconds to quarter note beats
 def seconds_to_beats(
     notes: list[NoteEvent], bpm: float, lead_in_s: float = 0.0
