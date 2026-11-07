@@ -11,3 +11,4 @@ print(type(notes[0].start_sec), type(notes[0].pitch))  # <class 'float'> <class 
 starts = [n.start_sec for n in notes]
 print(starts == sorted(starts))                      # True
 
+#
