@@ -1,0 +1,19 @@
+
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temporary files
+*.tmp
+*.log
+
+# Generated transcription files
+outputs/
+temp/
+
+# Environment variables and secrets
+.env
+.env.*
