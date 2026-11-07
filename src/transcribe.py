@@ -41,7 +41,7 @@ def transcribe(audio_path: str) -> list[NoteEvent]:
 
     return notes
 
-
+ #
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("usage: python src/transcribe.py <audio_file>")
