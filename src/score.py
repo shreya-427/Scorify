@@ -48,5 +48,3 @@ if __name__ == "__main__":
     result.write("musicxml", fp="test_score2.xml")
 
     print("Score generated successfully!")
-
-    
