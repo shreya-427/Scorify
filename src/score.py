@@ -1,23 +1,50 @@
 from music21 import stream, note, meter, clef
+from models import QuantizedNote
 
-# creating a new emtpy score
-score = stream.Score()
+def create_score(quantized_notes):
+    score = stream.Score()
+    part = stream.Part()
 
-# create a new part for the score
-part = stream.Part()
+    part.insert(0, clef.TrebleClef())
+    part.insert(0, meter.TimeSignature("4/4"))
 
-# adding clef and time signature to part
-part.append(clef.TrebleClef())
-part.append(meter.TimeSignature('4/4'))
+    current_beat = 0.0
 
-#create notes
-for pitch in [60, 62, 64, 65, 67, 69, 71, 72]:  # C4, D4, E4, F4, G4, A4, B4, C5
-    n = note.Note(pitch)
-    n.quarterLength = 1.0  # each note is a quarter note
-    part.append(n)
+    for qnote in sorted(
+        quantized_notes,
+        key=lambda n: n.start_beat
+    ):
+        # Check for silence before this note
+        if qnote.start_beat > current_beat:
+            rest_duration = qnote.start_beat - current_beat
 
-# add the part to the score
-score.append(part)
+            new_rest = note.Rest()
+            new_rest.quarterLength = rest_duration
+            part.insert(current_beat, new_rest)
 
-# export as MusicXML file
-score.write('musicxml', fp='test_score.xml')
+        # Create the musical note
+        new_note = note.Note(qnote.pitch)
+        new_note.quarterLength = (
+            qnote.end_beat - qnote.start_beat
+        )
+
+        part.insert(qnote.start_beat, new_note)
+
+        # Track where the note ends
+        current_beat = max(current_beat, qnote.end_beat)
+
+    score.insert(0, part)
+    return score
+
+
+# says that this test code runs when file is exectued directly, but not when another file imports it
+if __name__ == "__main__":
+    test_notes = [
+        QuantizedNote(60, 0.0, 1.0),
+        QuantizedNote(62, 2.0, 3.0)
+    ]
+
+    result = create_score(test_notes)
+    result.write("musicxml", fp="test_score2.xml")
+
+    print("Score generated successfully!")
