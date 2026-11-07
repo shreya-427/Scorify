@@ -20,5 +20,7 @@ if generate_button:
         st.error("No audio file uploaded")
     else:
         st.spinner("Generating sheet music...")
+
+        
     
 
