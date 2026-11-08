@@ -1,8 +1,10 @@
 #TO RUN APP, RUN FOLLWING COMMAND IN TERMINAL: python -m streamlit run src/app.py
 # imports Steamlit library into our program
 import streamlit as st
+import streamlit.components.v1 as components   # NEW: lets us show HTML/SVG in the page
 import tempfile
 import os
+import verovio                                  # NEW: draws MusicXML as sheet music
 from score import create_score
 from models import QuantizedNote
 from pipeline import run_pipeline
@@ -12,6 +14,21 @@ st.set_page_config(
     page_icon="🎵",
     layout="wide"
 )
+
+
+# NEW: converts MusicXML bytes into one SVG image per page of the score.
+# cache_data means the same XML is only rendered once, not on every rerun.
+@st.cache_data
+def render_score_svgs(musicxml_bytes: bytes) -> list[str]:
+    tk = verovio.toolkit()
+    tk.setOptions({
+        "pageWidth": 1400,
+        "scale": 45,
+        "adjustPageHeight": True,
+    })
+    tk.loadData(musicxml_bytes.decode("utf-8"))
+    return [tk.renderToSVG(page) for page in range(1, tk.getPageCount() + 1)]
+
 
 #add a banner
 st.markdown(
@@ -79,12 +96,6 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
-# # Page title and description
-# st.title("Scorify")
-# st.write("Welcome to Scorify! Turn your audio recordings into editable sheet music!")
-
-#add a banner
 
 # Initialize Session State
 # This stores the generated MusicXML file between Streamlit reruns
@@ -160,6 +171,13 @@ with action_col:
         key="download_button"
     )
 
+    # NEW: optional preview switch, greyed out until a score exists
+    show_score = st.toggle(
+        "Show score preview",
+        value=False,
+        disabled=st.session_state.musicxml_data is None,
+    )
+
 if generate_button:
     if uploaded_file is None:
         st.error("No audio file uploaded")
@@ -188,3 +206,11 @@ if generate_button:
 
         st.success("Score generated successfully!")
         st.rerun()
+
+# NEW: score preview, drawn only when the switch is on and a score exists
+if show_score and st.session_state.musicxml_data is not None:
+    st.subheader("Your score", anchor=False)
+    svgs = render_score_svgs(st.session_state.musicxml_data)
+    html = "<div style='background:white; padding:16px;'>" + "".join(svgs) + "</div>"
+    components.html(html, height=600, scrolling=True)
+    st.caption("Preview only. Download the MusicXML and open it in MuseScore to edit.")
