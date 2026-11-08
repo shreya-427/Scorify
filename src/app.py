@@ -1,3 +1,5 @@
+#TO RUN APP, RUN FOLLWING COMMAND IN TERMINAL: python -m streamlit run src/app.py
+
 # imports Steamlit library into our program
 import streamlit as st
 from score import create_score
