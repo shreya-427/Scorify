@@ -8,11 +8,37 @@ from models import QuantizedNote
 from pipeline import run_pipeline
 
 
+#add a banner
+st.markdown(
+"""
+<style>
+.scorify-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000000;
+    background-color: #4B3F72;
+    color: white;
+    text-align: center;
+    padding: 14px;
+}
+.block-container {
+    padding-top: 6rem;
+}
+</style>
+<div class="scorify-banner">
+    <b>Scorify</b> · Turn your recordings into editable sheet music
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
+# # Page title and description
+# st.title("Scorify")
+# st.write("Welcome to Scorify! Turn your audio recordings into editable sheet music!")
 
-# Page title and description
-st.title("Scorify")
-st.write("Welcome to Scorify! Turn your audio recordings into editable sheet music!")
+#add a banner
 
 # Initialize Session State
 # This stores the generated MusicXML file between Streamlit reruns
@@ -24,6 +50,13 @@ uploaded_file = st.file_uploader(
     "Upload an audio file in .wav or .mp3 format",
     type=["wav", "mp3"]
 )
+
+#score name input
+score_name = st.text_input(
+    "Score Name", value="Untitled")
+
+#composer name input
+composer_name = st.text_input("Composer Name", value="Name")
 
 # BPM input
 bpm = st.number_input(
