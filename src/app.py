@@ -1,9 +1,12 @@
 #TO RUN APP, RUN FOLLWING COMMAND IN TERMINAL: python -m streamlit run src/app.py
 # imports Steamlit library into our program
 import streamlit as st
+import tempfile
+import os
 from score import create_score
 from models import QuantizedNote
 from pipeline import run_pipeline
+
 
 # Page title and description
 st.title("Scorify")
@@ -51,10 +54,20 @@ if generate_button:
         with st.spinner("Generating sheet music..."):
 
             # Create the musical score
-            result = run_pipeline(uploaded_file, bpm, lead_in_s)
+
+            suffix = os.path.splitext(uploaded_file.name)[1]
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
+                temp_file.write(uploaded_file.getvalue())
+                temp_path = temp_file.name
+
+            try:
+                result = run_pipeline(temp_path, bpm, lead_in_s)
+            finally:
+                os.remove(temp_path)
 
             # Export the score as MusicXML
-            result.write("musicxml", fp="test_score.xml")
+            #result.write("musicxml", fp="test_score.xml")
 
             # Read the generated file into memory
             with open("test_score.xml", "rb") as f:
