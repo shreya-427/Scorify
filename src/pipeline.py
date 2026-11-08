@@ -6,15 +6,15 @@ from timing import seconds_to_beats
 from quantize import quantize_notes 
 from score import create_score   
 
-def run_pipeline( audio_path: str, bpm: float, lead_in_s: float | None = None):
+def run_pipeline( audio_path: str, bpm: float, lead_in_s: float, title:str,composer:str| None = None):
 
     transcribed_notes = transcribe(audio_path)
 
-    prelim_quantized_notes = quantize_notes(seconds_to_beats(transcribed_notes, bpm, lead_in_s))
+    prelim_quantized_notes = seconds_to_beats(transcribed_notes, bpm, lead_in_s)
 
     quantized_notes= quantize_notes(prelim_quantized_notes)
 
-    score = create_score(quantized_notes).write("musicxml", fp="test_score.xml")
+    score = create_score(quantized_notes, bpm, title=piece_title,composer=composer_name).write("musicxml", fp="test_score.xml")
 
     return score
 
