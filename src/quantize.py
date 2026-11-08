@@ -32,6 +32,11 @@ def quantize_notes(notes, grid_size=0.25):
     return quantized_notes
 
 
+
+
+
+
+
 if __name__ == "__main__":
     test_notes = [
     QuantizedNote(60, 0.0, 1.0),
