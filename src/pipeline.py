@@ -4,25 +4,20 @@ import argparse
 from models import QuantizedNote
 from transcribe import transcribe
 from timing import seconds_to_beats
+from quantize import quantize_notes 
+from score import create_score   
 
-# Teammate's functions. Until quantize.py is ready, use pass-through stand-ins
-# so you can run the rest of the chain.
-try:
-    from quantize import quantize, fix_overlaps_and_gaps
-except ImportError:
-    def quantize(notes):
-        return notes
+def run_pipeline( audio_path: str, bpm: float, lead_in_s: float = 0.0):
 
-    def fix_overlaps_and_gaps(notes):
-        return notes
+    transcribed_notes = transcribe(audio_path)
 
+    prelim_quantized_notes = quantize_notes(seconds_to_beats(transcribed_notes, bpm, lead_in_s))
 
-def run_pipeline(
-    audio_path: str, bpm: float, lead_in_s: float = 0.0
-) -> list[QuantizedNote]:
-    notes = transcribe(audio_path)
-    ...  # TODO: seconds_to_beats -> quantize -> fix_overlaps_and_gaps
-    return ...
+    quantized_notes= quantize_notes(prelim_quantized_notes)
+
+    score = create_score(quantized_notes).write("musicxml", fp="test_score.xml")
+
+    return score
 
 
 if __name__ == "__main__":
