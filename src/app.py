@@ -122,7 +122,7 @@ if generate_button:
                 temp_path = temp_file.name
 
             try:
-                result = run_pipeline(temp_path, bpm)
+                result = run_pipeline(temp_path, bpm,score_name,composer_name)
             finally:
                 os.remove(temp_path)
 
