@@ -154,7 +154,7 @@ with action_col:
     )
 
     st.download_button(
-        label="Download Score",
+        label="Download Score (MusicXML)",
         data=st.session_state.musicxml_data or b"",
         file_name="scorify_sheet_music.musicxml",
         mime="application/vnd.recordare.musicxml+xml",
