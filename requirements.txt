@@ -3,3 +3,4 @@ music21==9.9.2
 basic-pitch==0.4.0
 numpy==1.26.4
 protobuf<5
+setuptools<81
