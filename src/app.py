@@ -17,18 +17,40 @@ st.markdown(
     top: 0;
     left: 0;
     width: 100%;
+    height: 120px;
+    box-sizing: border-box;
     z-index: 1000000;
     background-color: #4B3F72;
     color: white;
-    text-align: center;
-    padding: 14px;
+    text-align: left;
+    padding: 15px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
+
+.scorify-title {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.scorify-subtitle {
+    font-size: 16px;
+    margin-top: 5px;
+}
+
 .block-container {
-    padding-top: 6rem;
+    padding-top: 9rem;
 }
 </style>
+
 <div class="scorify-banner">
-    <b>Scorify</b> · Turn your recordings into editable sheet music
+    <div class="scorify-title">SCORIFY</div>
+    <div class="scorify-subtitle">
+        Turn your recordings into editable sheet music
+    </div>
 </div>
 """,
     unsafe_allow_html=True,
@@ -44,6 +66,17 @@ st.markdown(
 # This stores the generated MusicXML file between Streamlit reruns
 if "musicxml_data" not in st.session_state:
     st.session_state.musicxml_data = None
+
+st.title("Welcome to Scorify!")
+st.write(
+    "Upload your audio recording and provide a BPM, title, and composer "
+    "to generate editable sheet music in MusicXML format."
+)
+
+settings_col, upload_col, action_col = st.columns(
+    [1.2, 1.6, 0.9],
+    gap="large"
+)
 
 # Audio file uploader
 uploaded_file = st.file_uploader(
