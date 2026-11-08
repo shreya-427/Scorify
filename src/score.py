@@ -1,5 +1,10 @@
 from music21 import stream, note, meter, clef
 from models import QuantizedNote
+from music21 import metadata
+
+# score.metadata = metadata.Metadata()
+# score.metadata.title = title
+# score.metadata.composer = composer
 
 def create_score(quantized_notes):
     score = stream.Score()
