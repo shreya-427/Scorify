@@ -6,11 +6,11 @@ from timing import seconds_to_beats
 from quantize import quantize_notes 
 from score import create_score   
 
-def run_pipeline( audio_path: str, bpm: float, lead_in_s: float, title:str,composer:str| None = None):
+def run_pipeline( audio_path: str, bpm: float, title:str,composer:str| None = None):
 
     transcribed_notes = transcribe(audio_path)
 
-    prelim_quantized_notes = seconds_to_beats(transcribed_notes, bpm, lead_in_s)
+    prelim_quantized_notes = seconds_to_beats(transcribed_notes, bpm)
 
     quantized_notes= quantize_notes(prelim_quantized_notes)
 
