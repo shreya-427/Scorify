@@ -1,10 +1,8 @@
 #TO RUN APP, RUN FOLLWING COMMAND IN TERMINAL: python -m streamlit run src/app.py
 # imports Steamlit library into our program
 import streamlit as st
-import streamlit.components.v1 as components   # NEW: lets us show HTML/SVG in the page
 import tempfile
-import os
-import verovio                                  # NEW: draws MusicXML as sheet music
+import os                                # NEW: draws MusicXML as sheet music
 from score import create_score
 from models import QuantizedNote
 from pipeline import run_pipeline
@@ -15,38 +13,6 @@ st.set_page_config(
     layout="wide"
 )
 
-
-# NEW: converts MusicXML bytes into one SVG image per page of the score.
-# cache_data means the same XML is only rendered once, not on every rerun.
-@st.cache_data
-def render_score_svgs(musicxml_bytes: bytes) -> list[str]:
-    tk = verovio.toolkit()
-
-    tk.setOptions({
-        "inputFrom": "musicxml",
-        "pageWidth": 1400,
-        "scale": 45,
-        "adjustPageHeight": True,
-    })
-
-    xml = musicxml_bytes.decode("utf-8-sig")
-
-    print("MusicXML length:", len(xml))
-    print("MusicXML beginning:", xml[:150])
-
-    result = tk.loadData(xml)
-
-    print("Load result:", result)
-    print("Page count:", tk.getPageCount())
-
-    if tk.getPageCount() == 0:
-        st.error("Verovio could not generate sheet music.")
-        return []
-
-    return [
-        tk.renderToSVG(page)
-        for page in range(1, tk.getPageCount() + 1)
-    ]
 
 
 #add a banner
@@ -190,12 +156,6 @@ with action_col:
         key="download_button"
     )
 
-    # NEW: optional preview switch, greyed out until a score exists
-    show_score = st.toggle(
-        "Show score preview",
-        value=False,
-        disabled=st.session_state.musicxml_data is None,
-    )
 
 if generate_button:
     if uploaded_file is None:
@@ -225,53 +185,3 @@ if generate_button:
 
         st.success("Score generated successfully!")
         st.rerun()
-
-if show_score and st.session_state.musicxml_data is not None:
-    st.subheader("Your score", anchor=False)
-
-    svgs = render_score_svgs(st.session_state.musicxml_data)
-
-    if svgs:
-        html = """
-        <html>
-        <head>
-            <style>
-                body {
-                    margin: 0;
-                    padding: 20px;
-                    background-color: #ffffff;
-                }
-
-                svg {
-                    display: block;
-                    width: 100%;
-                    height: auto;
-                    margin: 0 auto 20px auto;
-                }
-
-                .score-page {
-                    width: 100%;
-                    max-width: 1100px;
-                    margin: 0 auto;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="score-page">
-        """
-
-        html += "".join(svgs)
-        html += "</div></body></html>"
-
-        components.html(
-            html,
-            height=700,
-            scrolling=True
-        )
-
-    else:
-        st.error("Unable to render the sheet music.")
-
-    st.caption(
-        "Preview only. Download the MusicXML and open it in MuseScore to edit."
-    )
