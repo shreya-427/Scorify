@@ -1,4 +1,0 @@
-music21
-streamlit
-
-basic-pitch
