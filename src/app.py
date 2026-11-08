@@ -34,19 +34,20 @@ st.markdown(
     justify-content: center;
 }
 
+
 /* Match the heights of the Settings and Upload cards */
-.st-key-settings_card,
-.st-key-upload_card {
+.st-key-settings_container,
+.st-key-upload_container {
     min-height: 410px;
 }
 
 .st-key-generate_button button{
-    height: 205px;
+    height: 197px;
     box-sizing: border-box;
 }
 
 .st-key-download_button button{
-    height: 205px;
+    height: 197px;
     box-sizing: border-box;
 }
 
