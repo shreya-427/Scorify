@@ -40,6 +40,16 @@ st.markdown(
     min-height: 410px;
 }
 
+.st-key-generate_button button{
+    height: 205px;
+    box-sizing: border-box;
+}
+
+.st-key-download_button button{
+    height: 205px;
+    box-sizing: border-box;
+}
+
 .block-container {
     padding-top: 9rem;
     max-width: 1500px;
@@ -57,9 +67,6 @@ st.markdown(
     margin-top: 5px;
 }
 
-.block-container {
-    padding-top: 9rem;
-}
 </style>
 
 <div class="scorify-banner">
@@ -96,7 +103,7 @@ settings_col, upload_col, action_col = st.columns(
 
 # LEFT COLUMN: SETTINGS
 with settings_col:
-    with st.container(border=True):
+    with st.container(border=True, key="settings_container"):
         st.subheader("Settings", anchor=False)
 
         # Score name input
@@ -119,7 +126,7 @@ with settings_col:
 
 # MIDDLE COLUMN: AUDIO UPLOAD
 with upload_col:
-    with st.container(border=True):
+    with st.container(border=True, key="upload_container"):
         st.subheader("Upload Audio", anchor=False)
 
         uploaded_file = st.file_uploader(
@@ -138,7 +145,8 @@ with action_col:
     generate_button = st.button(
         "Generate Sheet Music",
         use_container_width=True,
-        type="secondary"
+        type="secondary",
+        key="generate_button"
     )
 
     st.download_button(
@@ -147,7 +155,8 @@ with action_col:
         file_name="scorify_sheet_music.musicxml",
         mime="application/vnd.recordare.musicxml+xml",
         use_container_width=True,
-        disabled=st.session_state.musicxml_data is None
+        disabled=st.session_state.musicxml_data is None,
+        key="download_button"
     )
 
 if generate_button:
