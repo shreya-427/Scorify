@@ -38,16 +38,16 @@ st.markdown(
 /* Match the heights of the Settings and Upload cards */
 .st-key-settings_container,
 .st-key-upload_container {
-    min-height: 410px;
+    min-height: 380px;
 }
 
 .st-key-generate_button button{
-    height: 197px;
+    height: 182px;
     box-sizing: border-box;
 }
 
 .st-key-download_button button{
-    height: 197px;
+    height: 182px;
     box-sizing: border-box;
 }
 
