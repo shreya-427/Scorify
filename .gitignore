@@ -1,6 +1,7 @@
 
 # Python virtual environment
 .venv/
+.venv-*/
 
 # Python cache
 __pycache__/
@@ -13,6 +14,8 @@ __pycache__/
 # Generated transcription files
 outputs/
 temp/
+/test_score.xml
+/test_preview.svg
 
 # Environment variables and secrets
 .env
