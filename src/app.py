@@ -21,13 +21,32 @@ st.set_page_config(
 @st.cache_data
 def render_score_svgs(musicxml_bytes: bytes) -> list[str]:
     tk = verovio.toolkit()
+
     tk.setOptions({
+        "inputFrom": "musicxml",
         "pageWidth": 1400,
         "scale": 45,
         "adjustPageHeight": True,
     })
-    tk.loadData(musicxml_bytes.decode("utf-8"))
-    return [tk.renderToSVG(page) for page in range(1, tk.getPageCount() + 1)]
+
+    xml = musicxml_bytes.decode("utf-8-sig")
+
+    print("MusicXML length:", len(xml))
+    print("MusicXML beginning:", xml[:150])
+
+    result = tk.loadData(xml)
+
+    print("Load result:", result)
+    print("Page count:", tk.getPageCount())
+
+    if tk.getPageCount() == 0:
+        st.error("Verovio could not generate sheet music.")
+        return []
+
+    return [
+        tk.renderToSVG(page)
+        for page in range(1, tk.getPageCount() + 1)
+    ]
 
 
 #add a banner
@@ -207,10 +226,52 @@ if generate_button:
         st.success("Score generated successfully!")
         st.rerun()
 
-# NEW: score preview, drawn only when the switch is on and a score exists
 if show_score and st.session_state.musicxml_data is not None:
     st.subheader("Your score", anchor=False)
+
     svgs = render_score_svgs(st.session_state.musicxml_data)
-    html = "<div style='background:white; padding:16px;'>" + "".join(svgs) + "</div>"
-    components.html(html, height=600, scrolling=True)
-    st.caption("Preview only. Download the MusicXML and open it in MuseScore to edit.")
+
+    if svgs:
+        html = """
+        <html>
+        <head>
+            <style>
+                body {
+                    margin: 0;
+                    padding: 20px;
+                    background-color: #ffffff;
+                }
+
+                svg {
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                    margin: 0 auto 20px auto;
+                }
+
+                .score-page {
+                    width: 100%;
+                    max-width: 1100px;
+                    margin: 0 auto;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="score-page">
+        """
+
+        html += "".join(svgs)
+        html += "</div></body></html>"
+
+        components.html(
+            html,
+            height=700,
+            scrolling=True
+        )
+
+    else:
+        st.error("Unable to render the sheet music.")
+
+    st.caption(
+        "Preview only. Download the MusicXML and open it in MuseScore to edit."
+    )
