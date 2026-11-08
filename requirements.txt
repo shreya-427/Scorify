@@ -1,3 +1,5 @@
+streamlit==1.32.2
 music21==9.9.2
-streamlit==1.65.0
 basic-pitch==0.4.0
+numpy==1.26.4
+protobuf<5
