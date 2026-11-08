@@ -14,7 +14,7 @@ def run_pipeline( audio_path: str, bpm: float, title:str,composer:str| None = No
 
     quantized_notes= quantize_notes(prelim_quantized_notes)
 
-    score = create_score(quantized_notes, bpm, title=piece_title,composer=composer_name).write("musicxml", fp="test_score.xml")
+    score = create_score(quantized_notes, bpm, title,composer).write("musicxml", fp="test_score.xml")
 
     return score
 

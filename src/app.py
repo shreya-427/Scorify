@@ -7,6 +7,11 @@ from score import create_score
 from models import QuantizedNote
 from pipeline import run_pipeline
 
+st.set_page_config(
+    page_title="Scorify",
+    page_icon="🎵",
+    layout="wide"
+)
 
 #add a banner
 st.markdown(
@@ -27,6 +32,17 @@ st.markdown(
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+/* Match the heights of the Settings and Upload cards */
+.st-key-settings_card,
+.st-key-upload_card {
+    min-height: 410px;
+}
+
+.block-container {
+    padding-top: 9rem;
+    max-width: 1500px;
 }
 
 .scorify-title {
@@ -74,38 +90,65 @@ st.write(
 )
 
 settings_col, upload_col, action_col = st.columns(
-    [1.2, 1.6, 0.9],
+    [1.3, 1.8, 1.1],
     gap="large"
 )
 
-# Audio file uploader
-uploaded_file = st.file_uploader(
-    "Upload an audio file in .wav or .mp3 format",
-    type=["wav", "mp3"]
-)
+# LEFT COLUMN: SETTINGS
+with settings_col:
+    with st.container(border=True):
+        st.subheader("Settings", anchor=False)
 
-#score name input
-score_name = st.text_input(
-    "Score Name", value="Untitled")
+        # Score name input
+        score_name = st.text_input(
+            "Score Name", value="Untitled"
+        )
 
-#composer name input
-composer_name = st.text_input("Composer Name", value="Name")
+        # Composer name input
+        composer_name = st.text_input(
+            "Composer Name", value="Name"
+        )
 
-# BPM input
-bpm = st.number_input(
-    "Tempo (BPM)",
-    min_value=40,
-    max_value=240,
-    value=120
-)
+        # BPM input
+        bpm = st.number_input(
+            "Tempo (BPM)",
+            min_value=40,
+            max_value=240,
+            value=120
+        )
 
-# Display uploaded audio
-if uploaded_file is not None:
-    st.success("Audio file has been uploaded successfully!")
-    st.audio(uploaded_file)
+# MIDDLE COLUMN: AUDIO UPLOAD
+with upload_col:
+    with st.container(border=True):
+        st.subheader("Upload Audio", anchor=False)
 
-# Generate sheet music button
-generate_button = st.button("Generate Sheet Music")
+        uploaded_file = st.file_uploader(
+            "Upload an audio file in .wav or .mp3 format",
+            type=["wav", "mp3"]
+        )
+
+        # Display uploaded audio
+        if uploaded_file is not None:
+            st.success("Audio file has been uploaded successfully!")
+            st.audio(uploaded_file)
+
+
+# RIGHT COLUMN: ACTIONS
+with action_col:
+    generate_button = st.button(
+        "Generate Sheet Music",
+        use_container_width=True,
+        type="secondary"
+    )
+
+    st.download_button(
+        label="Download Score",
+        data=st.session_state.musicxml_data or b"",
+        file_name="scorify_sheet_music.musicxml",
+        mime="application/vnd.recordare.musicxml+xml",
+        use_container_width=True,
+        disabled=st.session_state.musicxml_data is None
+    )
 
 if generate_button:
     if uploaded_file is None:
@@ -134,12 +177,4 @@ if generate_button:
                 st.session_state.musicxml_data = f.read()
 
         st.success("Score generated successfully!")
-
-# Display the download button whenever a score is available
-if st.session_state.musicxml_data is not None:
-    st.download_button(
-        label="Download Sheet Music",
-        data=st.session_state.musicxml_data,
-        file_name="scorify_sheet_music.musicxml",
-        mime="application/vnd.recordare.musicxml+xml"
-    )
+        st.rerun()
