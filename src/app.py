@@ -2,6 +2,7 @@
 import streamlit as st
 from score import create_score
 from models import QuantizedNote
+from pipeline import run_pipeline
 
 # Page title and description
 st.title("Scorify")
@@ -26,6 +27,14 @@ bpm = st.number_input(
     value=120
 )
 
+# Lead-in time input
+lead_in_s = st.number_input(
+        "Lead-in Time (seconds)",
+        min_value=0.0,
+        max_value=3.0,
+        value=0.0
+    )
+
 # Display uploaded audio
 if uploaded_file is not None:
     st.success("Audio file has been uploaded successfully!")
@@ -40,15 +49,8 @@ if generate_button:
     else:
         with st.spinner("Generating sheet music..."):
 
-            # Temporary test notes
-            # These will eventually come from the transcription pipeline
-            test_notes = [
-                QuantizedNote(60, 0.0, 1.0),
-                QuantizedNote(62, 2.0, 3.0)
-            ]
-
             # Create the musical score
-            result = create_score(test_notes)
+            result = run_pipeline(uploaded_file, bpm, lead_in_s)
 
             # Export the score as MusicXML
             result.write("musicxml", fp="test_score.xml")
