@@ -1,4 +1,3 @@
-# pipeline.py
 import argparse
 
 from models import QuantizedNote
