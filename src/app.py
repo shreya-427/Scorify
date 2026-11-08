@@ -64,12 +64,12 @@ st.markdown(
 }}
 
 .st-key-generate_button button {{
-    height: 184px;
+    height: 185px;
     box-sizing: border-box;
 }}
 
 .st-key-download_button button {{
-    height: 184px;
+    height: 185px;
     box-sizing: border-box;
 }}
 
