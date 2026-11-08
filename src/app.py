@@ -44,12 +44,12 @@ st.markdown(
 }
 
 .st-key-generate_button button{
-    height: 182px;
+    height: 184px;
     box-sizing: border-box;
 }
 
 .st-key-download_button button{
-    height: 182px;
+    height: 184px;
     box-sizing: border-box;
 }
 
