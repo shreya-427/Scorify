@@ -7,8 +7,8 @@ from timing import seconds_to_beats
 def test_basic_conversion():
     notes = [NoteEvent(pitch=60, start_sec=1.37, end_sec=1.81)]
     result = seconds_to_beats(notes, bpm=100)
-    assert result[0].start_beat == pytest.approx(2.2833, abs=0.001)
-    assert result[0].end_beat == pytest.approx(3.0167, abs=0.001)
+    assert result[0].start_beat == pytest.approx(0.0)
+    assert result[0].end_beat == pytest.approx(0.7333, abs=0.001)
 
 
 def test_returns_beatnotes_and_keeps_pitch():
@@ -22,8 +22,8 @@ def test_one_beat_at_known_tempo():
     # 60 BPM means 1 second = 1 beat
     notes = [NoteEvent(pitch=60, start_sec=2.0, end_sec=3.0)]
     result = seconds_to_beats(notes, bpm=60)
-    assert result[0].start_beat == pytest.approx(2.0)
-    assert result[0].end_beat == pytest.approx(3.0)
+    assert result[0].start_beat == pytest.approx(0.0)
+    assert result[0].end_beat == pytest.approx(1.0)
 
 
 def test_faster_tempo_gives_more_beats():
@@ -61,6 +61,36 @@ def test_note_before_lead_in_is_dropped():
 
 def test_empty_list():
     assert seconds_to_beats([], bpm=100) == []
+
+
+def test_automatic_start_preserves_durations_and_internal_rests():
+    notes = [
+        NoteEvent(pitch=60, start_sec=2.4, end_sec=2.9),
+        NoteEvent(pitch=62, start_sec=3.4, end_sec=4.15),
+    ]
+    result = seconds_to_beats(notes, bpm=120)
+    assert result[0].start_beat == pytest.approx(0.0)
+    assert result[0].end_beat == pytest.approx(1.0)
+    assert result[1].start_beat == pytest.approx(2.0)
+    assert result[1].end_beat == pytest.approx(3.5)
+
+
+def test_automatic_start_uses_earliest_note_for_unsorted_input():
+    notes = [
+        NoteEvent(pitch=62, start_sec=3.4, end_sec=3.9),
+        NoteEvent(pitch=60, start_sec=2.4, end_sec=2.9),
+    ]
+    result = seconds_to_beats(notes, bpm=120)
+    assert [n.pitch for n in result] == [62, 60]
+    assert result[0].start_beat == pytest.approx(2.0)
+    assert result[1].start_beat == pytest.approx(0.0)
+
+
+def test_explicit_zero_lead_in_preserves_opening_silence():
+    notes = [NoteEvent(pitch=60, start_sec=2.4, end_sec=3.0)]
+    result = seconds_to_beats(notes, bpm=100, lead_in_s=0.0)
+    assert result[0].start_beat == pytest.approx(4.0)
+    assert result[0].end_beat == pytest.approx(5.0)
 
 
 def test_order_is_preserved():

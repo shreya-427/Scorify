@@ -6,7 +6,7 @@ from timing import seconds_to_beats
 from quantize import quantize_notes 
 from score import create_score   
 
-def run_pipeline( audio_path: str, bpm: float, lead_in_s: float = 0.0):
+def run_pipeline( audio_path: str, bpm: float, lead_in_s: float | None = None):
 
     transcribed_notes = transcribe(audio_path)
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("audio_path")
     parser.add_argument("--bpm", type=float, required=True)
-    parser.add_argument("--lead-in", type=float, default=0.0)
+    parser.add_argument("--lead-in", type=float, help="Override the automatic first-note start (seconds)")
     args = parser.parse_args()
 
     for note in run_pipeline(args.audio_path, args.bpm, args.lead_in):

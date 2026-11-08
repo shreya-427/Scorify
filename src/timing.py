@@ -1,13 +1,19 @@
 from models import NoteEvent, QuantizedNote
 
-#converts the seconds to quater note beats, after removing count in time
+# Convert seconds to quarter-note beats, starting at the first note by default.
 def seconds_to_beats(
-    notes: list[NoteEvent], bpm: float, lead_in_s: float = 0.0
+    notes: list[NoteEvent], bpm: float, lead_in_s: float | None = None
 ) -> list[QuantizedNote]:
+    if not notes:
+        return []
+
+    if lead_in_s is None:
+        lead_in_s = min(note.start_sec for note in notes)
+
     result = []
     beats_per_sec = bpm/60
     for note in notes:
-        #count in time subtracted from beg and end
+        # Shift both endpoints to preserve durations and gaps between notes.
         start_s = note.start_sec - lead_in_s
         end_s = note.end_sec - lead_in_s
 

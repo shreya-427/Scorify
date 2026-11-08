@@ -33,14 +33,6 @@ bpm = st.number_input(
     value=120
 )
 
-# Lead-in time input
-lead_in_s = st.number_input(
-        "Lead-in Time (seconds)",
-        min_value=0.0,
-        max_value=3.0,
-        value=0.0
-    )
-
 # Display uploaded audio
 if uploaded_file is not None:
     st.success("Audio file has been uploaded successfully!")
@@ -64,7 +56,7 @@ if generate_button:
                 temp_path = temp_file.name
 
             try:
-                result = run_pipeline(temp_path, bpm, lead_in_s)
+                result = run_pipeline(temp_path, bpm)
             finally:
                 os.remove(temp_path)
 
