@@ -6,6 +6,8 @@ import os                                # NEW: draws MusicXML as sheet music
 from score import create_score
 from models import QuantizedNote
 from pipeline import run_pipeline
+import base64
+from pathlib import Path
 
 st.set_page_config(
     page_title="Scorify",
@@ -13,63 +15,68 @@ st.set_page_config(
     layout="wide"
 )
 
+# Load galaxy banner image
+image_path = Path(__file__).resolve().parent / "assets" / "galaxy_banner.jpg"
 
+with open(image_path, "rb") as image_file:
+    encoded_image = base64.b64encode(image_file.read()).decode()
 
 #add a banner
 st.markdown(
-"""
+    f"""
 <style>
-.scorify-banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    box-sizing: border-box;
-    z-index: 1000000;
-    background-color: #4B3F72;
+.scorify-banner {{
+    background-image:
+        linear-gradient(
+            rgba(10, 9, 25, 0.25),
+            rgba(10, 9, 25, 0.25)
+        ),
+        url("data:image/jpeg;base64,{encoded_image}");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    padding: 25px 40px;
     color: white;
-    text-align: left;
-    padding: 15px 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-
-/* Match the heights of the Settings and Upload cards */
-.st-key-settings_container,
-.st-key-upload_container {
-    min-height: 380px;
-}
-
-.st-key-generate_button button{
-    height: 184px;
+    width: 100%;
     box-sizing: border-box;
-}
+}}
 
-.st-key-download_button button{
-    height: 184px;
-    box-sizing: border-box;
-}
-
-.block-container {
-    padding-top: 9rem;
-    max-width: 1500px;
-}
-
-.scorify-title {
+.scorify-title {{
     font-size: 44px;
     font-weight: 900;
     line-height: 1.1;
     margin: 0;
-}
+    color: white;
+}}
 
-.scorify-subtitle {
+.scorify-subtitle {{
     font-size: 16px;
     margin-top: 5px;
-}
+    color: white;
+}}
 
+/* Match the heights of the Settings and Upload cards */
+.st-key-settings_container,
+.st-key-upload_container {{
+    min-height: 380px;
+}}
+
+.st-key-generate_button button {{
+    height: 184px;
+    box-sizing: border-box;
+}}
+
+.st-key-download_button button {{
+    height: 184px;
+    box-sizing: border-box;
+}}
+
+.block-container {{
+    padding-top: 4rem;
+    max-width: 1500px;
+}}
 </style>
 
 <div class="scorify-banner">
